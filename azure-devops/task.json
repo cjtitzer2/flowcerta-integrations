@@ -1,0 +1,52 @@
+{
+  "id": "a3f7c2d1-58e4-4b09-9f6a-1c2d3e4f5a6b",
+  "name": "FlowcertaValidate",
+  "friendlyName": "Flowcerta Governance Gate",
+  "description": "Validate RPA workflow files for governance and compliance",
+  "category": "Test",
+  "version": { "Major": 1, "Minor": 0, "Patch": 0 },
+  "inputs": [
+    {
+      "name": "apiKey",
+      "type": "string",
+      "label": "API Key",
+      "required": true,
+      "helpMarkDown": "Flowcerta API key. Store as a pipeline secret variable."
+    },
+    {
+      "name": "files",
+      "type": "filePath",
+      "label": "Workflow Files",
+      "required": true,
+      "helpMarkDown": "Glob pattern or path to workflow files. Example: $(Build.SourcesDirectory)/workflows/*.xaml"
+    },
+    {
+      "name": "platform",
+      "type": "pickList",
+      "label": "Platform",
+      "required": true,
+      "options": {
+        "uipath": "UiPath",
+        "power_automate": "Power Automate",
+        "aa": "Automation Anywhere",
+        "blue_prism": "Blue Prism"
+      }
+    },
+    {
+      "name": "enforcementMode",
+      "type": "pickList",
+      "label": "Enforcement Mode",
+      "required": false,
+      "defaultValue": "",
+      "options": {
+        "": "Use org default",
+        "advisory": "Advisory (never block)",
+        "warning": "Warning (never block)",
+        "blocking": "Blocking (fail on critical/high)"
+      }
+    }
+  ],
+  "execution": {
+    "Node20": { "target": "dist/index.js" }
+  }
+}
