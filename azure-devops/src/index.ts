@@ -35,7 +35,7 @@ async function run(): Promise<void> {
     form.append('metadata', JSON.stringify(metadata));
     form.append('label', `${metadata.build_number} / ${filename}`);
     if (enforcementMode) form.append('enforcement_mode', enforcementMode);
-    if (policyPackSlug) form.append('policy_pack_slug', policyPackSlug);
+    if (policyPackSlug) form.append('policy_pack', policyPackSlug);
 
     const response = await fetch(`${apiUrl}/api/v1/validate`, {
       method: 'POST',

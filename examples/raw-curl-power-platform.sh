@@ -23,6 +23,10 @@
 # Optional env vars:
 #   FLOWCERTA_API_URL    — API base URL (default: https://api.flowcerta.com)
 #   POLICY_PACK_SLUG     — policy pack slug to enforce instead of org default
+#   POLICY_ENVIRONMENT   — environment profile within the policy pack
+#                          (e.g. "qa", "prod") — selects per-environment
+#                          enforcement thresholds. Not the Power Platform
+#                          environment GUID; that goes in the metadata block.
 #   ENFORCEMENT_MODE     — advisory | warning | blocking (default: org default)
 
 set -euo pipefail
@@ -59,8 +63,9 @@ JSON
 LABEL="${SOLUTION_NAME:-power-automate} / ${STAGE_NAME:-unknown} / ${FILENAME}"
 
 EXTRA_FIELDS=()
-[[ -n "${ENFORCEMENT_MODE:-}" ]] && EXTRA_FIELDS+=(-F "enforcement_mode=${ENFORCEMENT_MODE}")
-[[ -n "${POLICY_PACK_SLUG:-}" ]] && EXTRA_FIELDS+=(-F "policy_pack_slug=${POLICY_PACK_SLUG}")
+[[ -n "${ENFORCEMENT_MODE:-}" ]]   && EXTRA_FIELDS+=(-F "enforcement_mode=${ENFORCEMENT_MODE}")
+[[ -n "${POLICY_PACK_SLUG:-}" ]]   && EXTRA_FIELDS+=(-F "policy_pack=${POLICY_PACK_SLUG}")
+[[ -n "${POLICY_ENVIRONMENT:-}" ]] && EXTRA_FIELDS+=(-F "environment=${POLICY_ENVIRONMENT}")
 
 RESPONSE=$(curl -s \
   -X POST "${API_URL}/api/v1/validate" \

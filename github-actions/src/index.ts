@@ -36,7 +36,7 @@ async function run(): Promise<void> {
     form.append('label', label);
     if (ruleset) form.append('ruleset', ruleset);
     if (enforcementMode) form.append('enforcement_mode', enforcementMode);
-    if (policyPackSlug) form.append('policy_pack_slug', policyPackSlug);
+    if (policyPackSlug) form.append('policy_pack', policyPackSlug);
 
     const response = await fetch(`${apiUrl}/api/v1/validate`, {
       method: 'POST',

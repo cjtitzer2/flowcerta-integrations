@@ -30,7 +30,7 @@ LABEL="${CI_REPO:-local} / ${CI_BRANCH:-unknown} / ${FILENAME}"
 
 EXTRA_FIELDS=()
 [[ -n "$ENFORCEMENT_MODE" ]] && EXTRA_FIELDS+=(-F "enforcement_mode=$ENFORCEMENT_MODE")
-[[ -n "${POLICY_PACK_SLUG:-}" ]] && EXTRA_FIELDS+=(-F "policy_pack_slug=${POLICY_PACK_SLUG}")
+[[ -n "${POLICY_PACK_SLUG:-}" ]] && EXTRA_FIELDS+=(-F "policy_pack=${POLICY_PACK_SLUG}")
 
 RESPONSE=$(curl -s \
   -X POST "${API_URL}/api/v1/validate" \
