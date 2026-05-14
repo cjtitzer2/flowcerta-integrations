@@ -11,6 +11,7 @@ async function run(): Promise<void> {
   const filesPattern = tl.getInput('files', true)!;
   const platform = tl.getInput('platform', true)!;
   const enforcementMode = tl.getInput('enforcementMode') ?? '';
+  const policyPackSlug = tl.getInput('policyPackSlug') ?? '';
   const apiUrl = process.env.FLOWCERTA_API_URL ?? 'https://api.flowcerta.com';
 
   const metadata = buildAzureMetadata(process.env);
@@ -34,6 +35,7 @@ async function run(): Promise<void> {
     form.append('metadata', JSON.stringify(metadata));
     form.append('label', `${metadata.build_number} / ${filename}`);
     if (enforcementMode) form.append('enforcement_mode', enforcementMode);
+    if (policyPackSlug) form.append('policy_pack_slug', policyPackSlug);
 
     const response = await fetch(`${apiUrl}/api/v1/validate`, {
       method: 'POST',

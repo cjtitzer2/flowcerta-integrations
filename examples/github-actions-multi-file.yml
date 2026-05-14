@@ -23,6 +23,9 @@ jobs:
           files: ${{ steps.find-files.outputs.files }}
           platform: uipath
           enforcement_mode: blocking
+          # Pin the policy pack used in production governance so the same
+          # PR is graded against the same rules regardless of who runs it.
+          policy_pack_slug: soc2-prod
           label: "PR #${{ github.event.pull_request.number }} — ${{ github.head_ref }}"
 
       - name: Post results to PR

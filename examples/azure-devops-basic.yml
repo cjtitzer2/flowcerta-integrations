@@ -20,3 +20,6 @@ steps:
       files: $(Build.SourcesDirectory)/workflows/*.xaml
       platform: uipath
       enforcementMode: blocking
+      # Pin a named policy pack so production gating does not silently
+      # drift when the org default changes.
+      policyPackSlug: soc2-prod

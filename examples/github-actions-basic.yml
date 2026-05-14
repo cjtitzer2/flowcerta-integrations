@@ -20,3 +20,7 @@ jobs:
           files: |
             workflows/InvoiceProcessing.xaml
           platform: uipath
+          # Pin a named policy pack rather than the org default, so the
+          # same workflow file can be gated by different rule sets in
+          # prod vs dev branches.
+          policy_pack_slug: soc2-prod

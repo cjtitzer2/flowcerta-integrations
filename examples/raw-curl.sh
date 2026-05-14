@@ -11,6 +11,7 @@
 #   FLOWCERTA_API_URL   — API base URL (default: https://api.flowcerta.com)
 #   PLATFORM            — uipath | power_automate | aa | blue_prism (default: uipath)
 #   ENFORCEMENT_MODE    — advisory | warning | blocking (default: org default)
+#   POLICY_PACK_SLUG    — policy pack slug to enforce (default: org default)
 
 set -euo pipefail
 
@@ -27,10 +28,9 @@ fi
 FILENAME=$(basename "$FILE")
 LABEL="${CI_REPO:-local} / ${CI_BRANCH:-unknown} / ${FILENAME}"
 
-EXTRA_FIELDS=""
-if [[ -n "$ENFORCEMENT_MODE" ]]; then
-  EXTRA_FIELDS="-F enforcement_mode=$ENFORCEMENT_MODE"
-fi
+EXTRA_FIELDS=()
+[[ -n "$ENFORCEMENT_MODE" ]] && EXTRA_FIELDS+=(-F "enforcement_mode=$ENFORCEMENT_MODE")
+[[ -n "${POLICY_PACK_SLUG:-}" ]] && EXTRA_FIELDS+=(-F "policy_pack_slug=${POLICY_PACK_SLUG}")
 
 RESPONSE=$(curl -s \
   -X POST "${API_URL}/api/v1/validate" \
@@ -39,7 +39,7 @@ RESPONSE=$(curl -s \
   -F "platform=${PLATFORM}" \
   -F "source=cicd" \
   -F "label=${LABEL}" \
-  $EXTRA_FIELDS \
+  "${EXTRA_FIELDS[@]}" \
   -w "\n%{http_code}") || { echo "Error: curl failed" >&2; exit 1; }
 
 HTTP_STATUS=$(echo "$RESPONSE" | tail -1)

@@ -20,6 +20,10 @@ inputs:
     description: 'advisory | warning | blocking. Default: org default'
     required: false
     default: ''
+  policy_pack_slug:
+    description: 'Policy pack slug (e.g. "soc2-prod") to enforce. Default: org default'
+    required: false
+    default: ''
   label:
     description: 'Human-readable label shown in Flowcerta dashboard'
     required: false

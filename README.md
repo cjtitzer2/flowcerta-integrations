@@ -10,7 +10,8 @@ This repo contains thin REST wrappers around the Flowcerta Validation API that a
 |-------------|-----------|--------|
 | GitHub Actions | [`github-actions/`](github-actions/) | ✅ Available |
 | Azure DevOps | [`azure-devops/`](azure-devops/) | ✅ Available |
-| Raw curl | [`examples/raw-curl.sh`](examples/raw-curl.sh) | ✅ Available |
+| Raw curl (UiPath) | [`examples/raw-curl.sh`](examples/raw-curl.sh) | ✅ Available |
+| Raw curl (Power Platform Pipelines) | [`examples/raw-curl-power-platform.sh`](examples/raw-curl-power-platform.sh) | ✅ Available |
 
 ## Quick Start
 
@@ -43,6 +44,48 @@ See [`examples/azure-devops-basic.yml`](examples/azure-devops-basic.yml) for a f
 ```bash
 FLOWCERTA_API_KEY=fc_live_... ./examples/raw-curl.sh workflows/Main.xaml
 ```
+
+### Power Automate (GitHub Actions)
+
+```yaml
+- uses: flowcerta/validate-action@v1
+  with:
+    api_key: ${{ secrets.FLOWCERTA_API_KEY }}
+    files: |
+      flows/InvoiceApproval.json
+      flows/VendorOnboarding.zip
+    platform: power_automate
+    policy_pack_slug: soc2-prod
+```
+
+See [`examples/power-automate-basic.yml`](examples/power-automate-basic.yml).
+
+### Power Platform Pipelines (raw curl)
+
+For Power Platform Pipelines extensions or any custom ALM hook that needs to forward deployment context (pipeline name, stage, solution, environment) into the validation record:
+
+```bash
+FLOWCERTA_API_KEY=fc_live_... \
+  PIPELINE_NAME="Core ALM Pipeline" STAGE_NAME=QA \
+  SOLUTION_NAME=ContosoSales SOLUTION_VERSION=1.4.2 \
+  ENVIRONMENT_NAME="QA Env" ENVIRONMENT_ID=00000000-... \
+  POLICY_PACK_SLUG=soc2-prod \
+  ./examples/raw-curl-power-platform.sh flows/Main.json
+```
+
+See [`examples/raw-curl-power-platform.sh`](examples/raw-curl-power-platform.sh) for the full Power Platform metadata block.
+
+## Policy Packs
+
+Pin a named policy pack instead of using the org default to keep production gating stable when the default changes:
+
+| Integration | Input |
+|-------------|-------|
+| GitHub Actions | `policy_pack_slug: soc2-prod` |
+| Azure DevOps | `policyPackSlug: soc2-prod` |
+| Raw curl | `POLICY_PACK_SLUG=soc2-prod` env var |
+
+The slug must match a policy pack defined for your org in the Flowcerta dashboard.
 
 ## How It Works
 

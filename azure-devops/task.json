@@ -44,6 +44,14 @@
         "warning": "Warning (never block)",
         "blocking": "Blocking (fail on critical/high)"
       }
+    },
+    {
+      "name": "policyPackSlug",
+      "type": "string",
+      "label": "Policy Pack Slug",
+      "required": false,
+      "defaultValue": "",
+      "helpMarkDown": "Policy pack slug (e.g. \"soc2-prod\") to enforce. Leave blank to use the org default."
     }
   ],
   "execution": {

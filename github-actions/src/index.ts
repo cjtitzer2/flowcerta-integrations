@@ -12,6 +12,7 @@ async function run(): Promise<void> {
   const platform = core.getInput('platform', { required: true });
   const ruleset = core.getInput('ruleset');
   const enforcementMode = core.getInput('enforcement_mode');
+  const policyPackSlug = core.getInput('policy_pack_slug');
   const labelInput = core.getInput('label');
   const apiUrl = core.getInput('api_url');
 
@@ -35,6 +36,7 @@ async function run(): Promise<void> {
     form.append('label', label);
     if (ruleset) form.append('ruleset', ruleset);
     if (enforcementMode) form.append('enforcement_mode', enforcementMode);
+    if (policyPackSlug) form.append('policy_pack_slug', policyPackSlug);
 
     const response = await fetch(`${apiUrl}/api/v1/validate`, {
       method: 'POST',
