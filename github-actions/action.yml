@@ -1,6 +1,12 @@
 name: 'Flowcerta Governance Gate'
-description: 'Validate RPA and automation workflow files for governance and compliance'
+description: 'Block risky UiPath, Power Automate, Automation Anywhere, and Blue Prism workflows before they merge. Validates files against the Flowcerta governance API and returns a score, structured findings, and a pass/fail status.'
 author: 'Flowcerta'
+
+# https://docs.github.com/en/actions/sharing-automations/creating-actions/metadata-syntax-for-github-actions#branding
+# Icon set: https://feathericons.com — only the names listed in the docs are allowed.
+branding:
+  icon: 'shield'
+  color: 'blue'
 
 inputs:
   api_key:
