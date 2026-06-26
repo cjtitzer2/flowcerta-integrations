@@ -1,0 +1,53 @@
+name: 'Flowcerta Governance Gate'
+description: 'Block risky UiPath, Power Automate, Automation Anywhere, and Blue Prism workflows before they merge. Validates files against the Flowcerta governance API and returns a score, structured findings, and a pass/fail status.'
+author: 'Flowcerta'
+
+# Root metadata so this repo can be published to the GitHub Actions Marketplace.
+# The built entrypoint lives in github-actions/dist (source in github-actions/).
+# https://docs.github.com/en/actions/sharing-automations/creating-actions/metadata-syntax-for-github-actions#branding
+branding:
+  icon: 'shield'
+  color: 'blue'
+
+inputs:
+  api_key:
+    description: 'Flowcerta API key (fc_live_... or fc_test_...)'
+    required: true
+  files:
+    description: 'Newline-separated list of workflow files to validate'
+    required: true
+  platform:
+    description: 'Automation platform: uipath | power_automate | aa | blue_prism'
+    required: true
+  ruleset:
+    description: 'Ruleset to apply. Default: org default'
+    required: false
+    default: ''
+  enforcement_mode:
+    description: 'advisory | warning | blocking. Default: org default'
+    required: false
+    default: ''
+  policy_pack_slug:
+    description: 'Policy pack slug (e.g. "soc2-prod") to enforce. Default: org default'
+    required: false
+    default: ''
+  label:
+    description: 'Human-readable label shown in Flowcerta dashboard'
+    required: false
+    default: ''
+  api_url:
+    description: 'Flowcerta API base URL (override for self-hosted)'
+    required: false
+    default: 'https://api.flowcerta.com'
+
+outputs:
+  validation_ids:
+    description: 'Comma-separated list of validation IDs'
+  passed:
+    description: 'true if all files passed, false if any failed'
+  report_urls:
+    description: 'Comma-separated list of report URLs in Flowcerta dashboard'
+
+runs:
+  using: 'node20'
+  main: 'github-actions/dist/index.js'
