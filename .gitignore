@@ -1,0 +1,9 @@
+node_modules/
+*.js.map
+coverage/
+.env*
+.claude/*
+
+# dist/ is intentionally tracked — GitHub Actions runs the compiled JS directly
+# from the repository (no `npm install` happens at action runtime). Rebuild via
+# `npm run build` from github-actions/ or azure-devops/ before tagging a release.

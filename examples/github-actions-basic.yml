@@ -1,0 +1,26 @@
+name: Flowcerta Governance Gate
+
+on:
+  pull_request:
+    paths: ['**.xaml', '**.json']
+  push:
+    branches: [main]
+    paths: ['**.xaml', '**.json']
+
+jobs:
+  governance-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate workflow files
+        uses: flowcerta/validate-action@v1
+        with:
+          api_key: ${{ secrets.FLOWCERTA_API_KEY }}
+          files: |
+            workflows/InvoiceProcessing.xaml
+          platform: uipath
+          # Pin a named policy pack rather than the org default, so the
+          # same workflow file can be gated by different rule sets in
+          # prod vs dev branches.
+          policy_pack_slug: soc2-prod

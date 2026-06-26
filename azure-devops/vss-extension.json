@@ -1,0 +1,64 @@
+{
+  "$comment_publisher": "Set 'publisher' to your Visual Studio Marketplace publisher ID before packaging. Register one at https://aka.ms/vsmarketplace-manage if you haven't yet.",
+
+  "manifestVersion": 1,
+  "id": "flowcerta-validate",
+  "publisher": "flowcerta",
+  "version": "1.0.0",
+  "name": "Flowcerta Governance Gate",
+  "description": "Block risky UiPath, Power Automate, Automation Anywhere, and Blue Prism workflows before they reach production. Validates files via the Flowcerta governance API and returns a score, ranked findings, and a pass/fail status that fails the build on critical/high findings in blocking mode.",
+  "public": true,
+  "categories": ["Azure Pipelines"],
+  "tags": [
+    "rpa",
+    "uipath",
+    "power-automate",
+    "automation",
+    "governance",
+    "compliance",
+    "static-analysis",
+    "ci-cd",
+    "soc2",
+    "hipaa"
+  ],
+  "targets": [
+    { "id": "Microsoft.VisualStudio.Services" }
+  ],
+  "icons": {
+    "default": "images/extension-icon.png"
+  },
+  "content": {
+    "details": {
+      "path": "overview.md"
+    },
+    "license": {
+      "path": "../LICENSE"
+    }
+  },
+  "links": {
+    "home":       { "uri": "https://flowcerta.com" },
+    "support":    { "uri": "https://flowcerta.com/contact/" },
+    "repository": { "uri": "https://github.com/cjtitzer2/flowcerta-integrations" },
+    "issues":     { "uri": "https://github.com/cjtitzer2/flowcerta-integrations/issues" },
+    "learn":      { "uri": "https://flowcerta.com/ci-integration/" }
+  },
+  "branding": {
+    "color": "rgb(13, 13, 13)",
+    "theme": "dark"
+  },
+  "files": [
+    { "path": "dist",     "addressable": false },
+    { "path": "task.json", "addressable": false },
+    { "path": "images",   "addressable": true }
+  ],
+  "contributions": [
+    {
+      "id": "flowcerta-validate-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": ["ms.vss-distributed-task.tasks"],
+      "properties": {
+        "name": "."
+      }
+    }
+  ]
+}

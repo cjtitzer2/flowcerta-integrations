@@ -1,0 +1,45 @@
+name: Flowcerta — Full Governance Suite
+
+on:
+  pull_request:
+
+jobs:
+  governance-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find workflow files
+        id: find-files
+        run: |
+          FILES=$(find ./workflows \( -name "*.xaml" -o -name "*.json" \) | head -20 | tr '\n' '\n')
+          echo "files=$FILES" >> $GITHUB_OUTPUT
+
+      - name: Validate all workflow files
+        id: validate
+        uses: flowcerta/validate-action@v1
+        with:
+          api_key: ${{ secrets.FLOWCERTA_API_KEY }}
+          files: ${{ steps.find-files.outputs.files }}
+          platform: uipath
+          enforcement_mode: blocking
+          # Pin the policy pack used in production governance so the same
+          # PR is graded against the same rules regardless of who runs it.
+          policy_pack_slug: soc2-prod
+          label: "PR #${{ github.event.pull_request.number }} — ${{ github.head_ref }}"
+
+      - name: Post results to PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const passed = '${{ steps.validate.outputs.passed }}' === 'true';
+            const reportUrls = '${{ steps.validate.outputs.report_urls }}'.split(',').filter(Boolean);
+            const status = passed ? '✅ All workflow files passed governance validation.' : '❌ One or more workflow files failed governance validation.';
+            const links = reportUrls.map(u => `- [View report](${u})`).join('\n');
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### Flowcerta Governance Gate\n\n${status}\n\n${links}`,
+            });

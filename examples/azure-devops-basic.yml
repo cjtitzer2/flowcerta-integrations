@@ -1,0 +1,25 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - '**.xaml'
+      - '**.json'
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - checkout: self
+
+  - task: FlowcertaValidate@1
+    displayName: Flowcerta Governance Gate
+    inputs:
+      apiKey: $(FLOWCERTA_API_KEY)
+      files: $(Build.SourcesDirectory)/workflows/*.xaml
+      platform: uipath
+      enforcementMode: blocking
+      # Pin a named policy pack so production gating does not silently
+      # drift when the org default changes.
+      policyPackSlug: soc2-prod
