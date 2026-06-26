@@ -4,7 +4,8 @@
   "friendlyName": "Flowcerta Governance Gate",
   "description": "Validate RPA workflow files for governance and compliance",
   "category": "Test",
-  "version": { "Major": 1, "Minor": 0, "Patch": 0 },
+  "version": { "Major": 1, "Minor": 0, "Patch": 1 },
+  "instanceNameFormat": "Flowcerta Governance Gate $(platform)",
   "inputs": [
     {
       "name": "apiKey",

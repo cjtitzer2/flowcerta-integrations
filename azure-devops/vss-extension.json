@@ -4,9 +4,9 @@
   "manifestVersion": 1,
   "id": "flowcerta-validate",
   "publisher": "flowcerta",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "Flowcerta Governance Gate",
-  "description": "Block risky UiPath, Power Automate, Automation Anywhere, and Blue Prism workflows before they reach production. Validates files via the Flowcerta governance API and returns a score, ranked findings, and a pass/fail status that fails the build on critical/high findings in blocking mode.",
+  "description": "Validate UiPath and Power Automate workflows via the Flowcerta governance API. Returns a score and ranked findings, and fails the build on critical or high findings in blocking mode.",
   "public": true,
   "categories": ["Azure Pipelines"],
   "tags": [
@@ -32,7 +32,7 @@
       "path": "overview.md"
     },
     "license": {
-      "path": "../LICENSE"
+      "path": "LICENSE"
     }
   },
   "links": {
@@ -47,8 +47,7 @@
     "theme": "dark"
   },
   "files": [
-    { "path": "dist",     "addressable": false },
-    { "path": "task.json", "addressable": false },
+    { "path": "buildtask", "addressable": false },
     { "path": "images",   "addressable": true }
   ],
   "contributions": [
@@ -57,7 +56,7 @@
       "type": "ms.vss-distributed-task.task",
       "targets": ["ms.vss-distributed-task.tasks"],
       "properties": {
-        "name": "."
+        "name": "buildtask"
       }
     }
   ]

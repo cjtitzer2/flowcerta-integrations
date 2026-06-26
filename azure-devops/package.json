@@ -4,7 +4,7 @@
   "description": "Flowcerta governance gate — Azure DevOps",
   "main": "dist/index.js",
   "scripts": {
-    "build": "ncc build src/index.ts -o dist --source-map --minify",
+    "build": "ncc build src/index.ts -o buildtask/dist --source-map --minify",
     "test": "jest",
     "test:ci": "jest --ci --coverage"
   },
