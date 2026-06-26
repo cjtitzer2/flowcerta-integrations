@@ -1,5 +1,5 @@
 name: 'Flowcerta Governance Gate'
-description: 'Block risky UiPath, Power Automate, Automation Anywhere, and Blue Prism workflows before they merge. Validates files against the Flowcerta governance API and returns a score, structured findings, and a pass/fail status.'
+description: 'Validate UiPath and Power Automate workflows via the Flowcerta governance API and block risky merges in CI.'
 author: 'Flowcerta'
 
 # Root metadata so this repo can be published to the GitHub Actions Marketplace.
