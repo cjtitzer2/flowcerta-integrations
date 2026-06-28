@@ -61,6 +61,16 @@ describe('processResponse', () => {
     expect(() => processResponse(403, {}))
       .toThrow(/API key/i);
   });
+
+  it('fails closed: throws on a 2xx with a missing/unparseable body', () => {
+    expect(() => processResponse(200, null))
+      .toThrow(/not valid JSON/i);
+  });
+
+  it('still blocks on a 422 with a null body (fails closed)', () => {
+    const r = processResponse(422, null);
+    expect(r.failed).toBe(true);
+  });
 });
 
 describe('parseResponseBody', () => {
@@ -68,12 +78,12 @@ describe('parseResponseBody', () => {
     expect(parseResponseBody('{"score":92}')).toEqual({ score: 92 });
   });
 
-  it('returns empty object for an empty body', () => {
-    expect(parseResponseBody('')).toEqual({});
-    expect(parseResponseBody('   ')).toEqual({});
+  it('returns null for an empty body', () => {
+    expect(parseResponseBody('')).toBeNull();
+    expect(parseResponseBody('   ')).toBeNull();
   });
 
-  it('returns empty object for non-JSON body instead of throwing', () => {
-    expect(parseResponseBody('Bad Gateway')).toEqual({});
+  it('returns null for a non-JSON body instead of throwing', () => {
+    expect(parseResponseBody('Bad Gateway')).toBeNull();
   });
 });
