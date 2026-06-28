@@ -4,10 +4,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import fetch from 'node-fetch';
 import { glob } from 'glob';
-import { buildAzureMetadata, processResponse } from './validate';
+import { buildAzureMetadata, parseResponseBody, processResponse } from './validate';
 
 async function run(): Promise<void> {
   const apiKey = tl.getInput('apiKey', true)!;
+  const orgId = tl.getInput('orgId', true)!;
   const filesPattern = tl.getInput('files', true)!;
   const platform = tl.getInput('platform', true)!;
   const enforcementMode = tl.getInput('enforcementMode') ?? '';
@@ -29,7 +30,13 @@ async function run(): Promise<void> {
     console.log(`→ Validating: ${filename}`);
 
     const form = new FormData();
-    form.append('file', fs.createReadStream(file), filename);
+    // Send octet-stream so the API skips MIME sniffing (it still validates
+    // file structure). Avoids form-data guessing e.g. application/xaml+xml for
+    // .xaml, which the API rejects.
+    form.append('file', fs.createReadStream(file), {
+      filename,
+      contentType: 'application/octet-stream',
+    });
     form.append('platform', platform);
     form.append('source', 'cicd');
     form.append('metadata', JSON.stringify(metadata));
@@ -39,11 +46,11 @@ async function run(): Promise<void> {
 
     const response = await fetch(`${apiUrl}/api/v1/validate`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${apiKey}` },
+      headers: { Authorization: `ApiKey ${apiKey}`, 'X-Org-Id': orgId },
       body: form,
     });
 
-    const body = await response.json() as any;
+    const body = parseResponseBody(await response.text());
     const result = processResponse(response.status, body);
 
     if (result.failed) {

@@ -34,7 +34,26 @@ export function buildAzureMetadata(env: NodeJS.ProcessEnv): AzureMetadata {
   };
 }
 
+/**
+ * Safely parse a response body string. The API can return an empty body
+ * (e.g. a bare 401) or a non-JSON error page; in those cases we return an
+ * empty object rather than throwing an opaque "Unexpected end of JSON input".
+ */
+export function parseResponseBody(text: string): any {
+  if (!text || !text.trim()) return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {};
+  }
+}
+
 export function processResponse(status: number, body: any): ValidationResult {
+  if (status === 401 || status === 403) {
+    throw new Error(
+      `Authentication failed (${status}): check your Flowcerta API key.`,
+    );
+  }
   if (status === 422) {
     return {
       failed: true,

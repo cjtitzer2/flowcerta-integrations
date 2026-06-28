@@ -1,4 +1,4 @@
-import { buildAzureMetadata, processResponse } from '../src/validate';
+import { buildAzureMetadata, parseResponseBody, processResponse } from '../src/validate';
 
 describe('buildAzureMetadata', () => {
   const env = {
@@ -50,5 +50,30 @@ describe('processResponse', () => {
   it('throws for unexpected status', () => {
     expect(() => processResponse(500, { error: { code: 'SERVER_ERROR', message: 'oops' } }))
       .toThrow('API error 500');
+  });
+
+  it('throws a key-specific message for 401', () => {
+    expect(() => processResponse(401, {}))
+      .toThrow(/API key/i);
+  });
+
+  it('throws a key-specific message for 403', () => {
+    expect(() => processResponse(403, {}))
+      .toThrow(/API key/i);
+  });
+});
+
+describe('parseResponseBody', () => {
+  it('parses valid JSON', () => {
+    expect(parseResponseBody('{"score":92}')).toEqual({ score: 92 });
+  });
+
+  it('returns empty object for an empty body', () => {
+    expect(parseResponseBody('')).toEqual({});
+    expect(parseResponseBody('   ')).toEqual({});
+  });
+
+  it('returns empty object for non-JSON body instead of throwing', () => {
+    expect(parseResponseBody('Bad Gateway')).toEqual({});
   });
 });

@@ -4,7 +4,7 @@
   "manifestVersion": 1,
   "id": "flowcerta-validate",
   "publisher": "flowcerta",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "name": "Flowcerta Governance Gate",
   "description": "Validate UiPath and Power Automate workflows via the Flowcerta governance API. Returns a score and ranked findings, and fails the build on critical or high findings in blocking mode.",
   "public": true,

@@ -4,7 +4,7 @@
   "friendlyName": "Flowcerta Governance Gate",
   "description": "Validate RPA workflow files for governance and compliance",
   "category": "Test",
-  "version": { "Major": 1, "Minor": 0, "Patch": 1 },
+  "version": { "Major": 1, "Minor": 0, "Patch": 2 },
   "instanceNameFormat": "Flowcerta Governance Gate $(platform)",
   "inputs": [
     {
@@ -13,6 +13,13 @@
       "label": "API Key",
       "required": true,
       "helpMarkDown": "Flowcerta API key. Store as a pipeline secret variable."
+    },
+    {
+      "name": "orgId",
+      "type": "string",
+      "label": "Organization ID",
+      "required": true,
+      "helpMarkDown": "Flowcerta organization ID (GUID) the API key belongs to. Find it in Settings → Organization, or via GET /api/orgs."
     },
     {
       "name": "files",
