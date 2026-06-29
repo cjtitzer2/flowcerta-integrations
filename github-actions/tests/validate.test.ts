@@ -1,4 +1,4 @@
-import { buildGitHubMetadata, buildLabel, processResponse } from '../src/validate';
+import { buildGitHubMetadata, buildLabel, parseResponseBody, processResponse } from '../src/validate';
 
 const mockContext = {
   repo: { owner: 'acme', repo: 'rpa-bots' },
@@ -71,5 +71,36 @@ describe('processResponse', () => {
   it('throws for unexpected non-200/422 status', () => {
     expect(() => processResponse(500, { error: { code: 'SERVER_ERROR', message: 'oops' } }))
       .toThrow('API error 500');
+  });
+
+  it('throws a key/org-specific message for 401', () => {
+    expect(() => processResponse(401, null)).toThrow(/API key/i);
+  });
+
+  it('throws a key/org-specific message for 403', () => {
+    expect(() => processResponse(403, null)).toThrow(/API key/i);
+  });
+
+  it('fails closed: throws on a 2xx with a missing/unparseable body', () => {
+    expect(() => processResponse(200, null)).toThrow(/not valid JSON/i);
+  });
+
+  it('still blocks on a 422 with a null body (fails closed)', () => {
+    expect(processResponse(422, null).failed).toBe(true);
+  });
+});
+
+describe('parseResponseBody', () => {
+  it('parses valid JSON', () => {
+    expect(parseResponseBody('{"score":88}')).toEqual({ score: 88 });
+  });
+
+  it('returns null for an empty body', () => {
+    expect(parseResponseBody('')).toBeNull();
+    expect(parseResponseBody('   ')).toBeNull();
+  });
+
+  it('returns null for a non-JSON body instead of throwing', () => {
+    expect(parseResponseBody('Bad Gateway')).toBeNull();
   });
 });

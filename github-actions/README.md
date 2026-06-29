@@ -8,6 +8,7 @@ GitHub Action for the [Flowcerta](https://flowcerta.com) governance gate. Valida
 - uses: flowcerta/validate-action@v1
   with:
     api_key: ${{ secrets.FLOWCERTA_API_KEY }}
+    org_id: ${{ secrets.FLOWCERTA_ORG_ID }}
     files: |
       workflows/InvoiceProcessing.xaml
       workflows/PaymentApproval.xaml
@@ -19,6 +20,7 @@ GitHub Action for the [Flowcerta](https://flowcerta.com) governance gate. Valida
 | Input | Required | Default | Description |
 |-------|----------|---------|-------------|
 | `api_key` | ✅ | — | Flowcerta API key. Store as a repository secret. |
+| `org_id` | ✅ | — | Flowcerta organization ID (GUID) the API key belongs to. Store as a repository secret. |
 | `files` | ✅ | — | Newline-separated list of workflow files to validate. |
 | `platform` | ✅ | — | `uipath` \| `power_automate` \| `aa` \| `blue_prism` |
 | `ruleset` | ❌ | org default | Ruleset ID to apply. |

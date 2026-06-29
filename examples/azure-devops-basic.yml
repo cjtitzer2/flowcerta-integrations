@@ -17,6 +17,7 @@ steps:
     displayName: Flowcerta Governance Gate
     inputs:
       apiKey: $(FLOWCERTA_API_KEY)
+      orgId: $(FLOWCERTA_ORG_ID)
       files: $(Build.SourcesDirectory)/workflows/*.xaml
       platform: uipath
       enforcementMode: blocking

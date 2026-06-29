@@ -4,10 +4,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
-import { buildGitHubMetadata, buildLabel, processResponse, ValidationResult } from './validate';
+import { buildGitHubMetadata, buildLabel, parseResponseBody, processResponse, ValidationResult } from './validate';
 
 async function run(): Promise<void> {
   const apiKey = core.getInput('api_key', { required: true });
+  const orgId = core.getInput('org_id', { required: true });
   const filesInput = core.getInput('files', { required: true });
   const platform = core.getInput('platform', { required: true });
   const ruleset = core.getInput('ruleset');
@@ -29,7 +30,13 @@ async function run(): Promise<void> {
     core.info(`→ Validating: ${filename}`);
 
     const form = new FormData();
-    form.append('file', fs.createReadStream(file), filename);
+    // Send octet-stream so the API skips MIME sniffing (it still validates
+    // file structure). Avoids form-data guessing e.g. application/xaml+xml for
+    // .xaml, which the API rejects.
+    form.append('file', fs.createReadStream(file), {
+      filename,
+      contentType: 'application/octet-stream',
+    });
     form.append('platform', platform);
     form.append('source', 'cicd');
     form.append('metadata', JSON.stringify(metadata));
@@ -40,11 +47,11 @@ async function run(): Promise<void> {
 
     const response = await fetch(`${apiUrl}/api/v1/validate`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${apiKey}` },
+      headers: { Authorization: `ApiKey ${apiKey}`, 'X-Org-Id': orgId },
       body: form,
     });
 
-    const body = await response.json() as any;
+    const body = parseResponseBody(await response.text());
     const result = processResponse(response.status, body);
     results.push(result);
 

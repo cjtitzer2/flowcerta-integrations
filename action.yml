@@ -13,6 +13,9 @@ inputs:
   api_key:
     description: 'Flowcerta API key (fc_live_... or fc_test_...)'
     required: true
+  org_id:
+    description: 'Flowcerta organization ID (GUID) the API key belongs to. Find it in Settings → Organization, or via GET /api/orgs.'
+    required: true
   files:
     description: 'Newline-separated list of workflow files to validate'
     required: true
