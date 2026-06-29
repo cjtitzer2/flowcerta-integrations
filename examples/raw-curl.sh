@@ -2,10 +2,12 @@
 # raw-curl.sh — Validate a single workflow file via the Flowcerta API
 #
 # Usage:
-#   FLOWCERTA_API_KEY=fc_live_... ./raw-curl.sh workflows/Main.xaml
+#   FLOWCERTA_API_KEY=rpagov_live_... FLOWCERTA_ORG_ID=<guid> ./raw-curl.sh workflows/Main.xaml
 #
 # Required env vars:
 #   FLOWCERTA_API_KEY   — your Flowcerta API key
+#   FLOWCERTA_ORG_ID    — the organization ID (GUID) the API key belongs to
+#                         (Settings → Organization, or GET /api/orgs)
 #
 # Optional env vars:
 #   FLOWCERTA_API_URL   — API base URL (default: https://api.flowcerta.com)
@@ -25,6 +27,11 @@ if [[ -z "${FLOWCERTA_API_KEY:-}" ]]; then
   exit 1
 fi
 
+if [[ -z "${FLOWCERTA_ORG_ID:-}" ]]; then
+  echo "Error: FLOWCERTA_ORG_ID is not set" >&2
+  exit 1
+fi
+
 FILENAME=$(basename "$FILE")
 LABEL="${CI_REPO:-local} / ${CI_BRANCH:-unknown} / ${FILENAME}"
 
@@ -34,8 +41,9 @@ EXTRA_FIELDS=()
 
 RESPONSE=$(curl -s \
   -X POST "${API_URL}/api/v1/validate" \
-  -H "Authorization: Bearer ${FLOWCERTA_API_KEY}" \
-  -F "file=@${FILE};filename=${FILENAME}" \
+  -H "Authorization: ApiKey ${FLOWCERTA_API_KEY}" \
+  -H "X-Org-Id: ${FLOWCERTA_ORG_ID}" \
+  -F "file=@${FILE};type=application/octet-stream;filename=${FILENAME}" \
   -F "platform=${PLATFORM}" \
   -F "source=cicd" \
   -F "label=${LABEL}" \

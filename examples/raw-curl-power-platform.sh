@@ -5,10 +5,12 @@
 # back to the deployment.
 #
 # Usage:
-#   FLOWCERTA_API_KEY=fc_live_... ./raw-curl-power-platform.sh flows/Main.json
+#   FLOWCERTA_API_KEY=rpagov_live_... FLOWCERTA_ORG_ID=<guid> ./raw-curl-power-platform.sh flows/Main.json
 #
 # Required env vars:
 #   FLOWCERTA_API_KEY    — Flowcerta API key
+#   FLOWCERTA_ORG_ID     — the organization ID (GUID) the API key belongs to
+#                          (Settings → Organization, or GET /api/orgs)
 #
 # Power Platform pipeline context env vars (set by your pipeline extension):
 #   PIPELINE_NAME        — e.g. "Core ALM Pipeline"
@@ -36,6 +38,11 @@ API_URL="${FLOWCERTA_API_URL:-https://api.flowcerta.com}"
 
 if [[ -z "${FLOWCERTA_API_KEY:-}" ]]; then
   echo "Error: FLOWCERTA_API_KEY is not set" >&2
+  exit 1
+fi
+
+if [[ -z "${FLOWCERTA_ORG_ID:-}" ]]; then
+  echo "Error: FLOWCERTA_ORG_ID is not set" >&2
   exit 1
 fi
 
@@ -69,8 +76,9 @@ EXTRA_FIELDS=()
 
 RESPONSE=$(curl -s \
   -X POST "${API_URL}/api/v1/validate" \
-  -H "Authorization: Bearer ${FLOWCERTA_API_KEY}" \
-  -F "file=@${FILE};filename=${FILENAME}" \
+  -H "Authorization: ApiKey ${FLOWCERTA_API_KEY}" \
+  -H "X-Org-Id: ${FLOWCERTA_ORG_ID}" \
+  -F "file=@${FILE};type=application/octet-stream;filename=${FILENAME}" \
   -F "platform=power_automate" \
   -F "source=cicd" \
   -F "label=${LABEL}" \
